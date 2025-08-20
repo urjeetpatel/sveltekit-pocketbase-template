@@ -12,3 +12,14 @@ services:
       - ./app_volumes/pocketbase/pb_public:/pb_public
       - ./app_volumes/pocketbase/pb_migrations:/pb_migrations
     restart: unless-stopped
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    container_name: app
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+    volumes:
+      - ./app:/app
