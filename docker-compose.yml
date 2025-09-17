@@ -6,9 +6,24 @@ services:
       - "8090:80"
     environment:
       - INITIAL_SUPERUSER_EMAIL=${PB_INITIAL_SUPERUSER_EMAIL:-superuser@user.com}
-      - INITIAL_SUPERUSER_PASSWORD=${PB_INITIAL_SUPERUSER_EMAIL:-superuser}
+      - INITIAL_SUPERUSER_PASSWORD=${PB_INITIAL_SUPERUSER_PASSWORD:-superuser}
     volumes:
       - ./app_volumes/pocketbase/pb_data:/pb_data
       - ./app_volumes/pocketbase/pb_public:/pb_public
       - ./app_volumes/pocketbase/pb_migrations:/pb_migrations
     restart: unless-stopped
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    container_name: app
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - PUBLIC_POCKETBASE_URL=${PUBLIC_POCKETBASE_URL:-http://localhost:8090}
+      - PB_TYPEGEN_URL=${PUBLIC_POCKETBASE_URL:-http://pocketbase_backend}
+      - PB_TYPEGEN_EMAIL=${PB_INITIAL_SUPERUSER_EMAIL:-superuser@user.com}
+      - PB_TYPEGEN_PASSWORD=${PB_INITIAL_SUPERUSER_PASSWORD:-superuser}
+    volumes:
+      - ./app:/app
